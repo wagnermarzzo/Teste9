@@ -7,37 +7,42 @@
     <style>
         body {
             font-family: Arial, sans-serif;
+            background-color: #f8f8f8;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f4;
         }
         header {
             background-color: #333;
             color: white;
-            padding: 15px;
             text-align: center;
+            padding: 20px;
         }
         h1 {
             margin: 0;
         }
         .form-container {
-            margin: 20px;
             background-color: white;
+            width: 80%;
+            margin: 30px auto;
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
+        label {
+            font-weight: bold;
+        }
         input, select, button {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             margin: 10px 0;
-            border: 1px solid #ddd;
             border-radius: 4px;
+            border: 1px solid #ddd;
         }
         button {
             background-color: #28a745;
             color: white;
             cursor: pointer;
+            border: none;
         }
         button:hover {
             background-color: #218838;
@@ -46,12 +51,23 @@
             color: red;
             font-size: 14px;
         }
+        .banner {
+            width: 100%;
+            height: 300px;
+            background-image: url('https://i.pinimg.com/originals/57/06/01/57060132745e29b1bf8474a4e66e0880.jpg');
+            background-size: cover;
+            background-position: center;
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 <body>
+
     <header>
-        <h1>Agendamento de Serviços - Michelly Vanessa Unhas</h1>
+        <h1>Agendamento - Michelly Vanessa Unhas</h1>
     </header>
+
+    <div class="banner"></div>
 
     <div class="form-container">
         <h2>Agende seu horário</h2>
@@ -92,15 +108,12 @@
         document.getElementById('agendamentoForm').addEventListener('submit', function(event) {
             event.preventDefault();
 
-            // Obter a data e o horário selecionados
             let dataSelecionada = new Date(document.getElementById('data').value);
             let hora = document.getElementById('horario').value;
 
-            // Definir os horários válidos para agendamento
             let horariosValidosSexta = ["Sexta-feira 18:00", "Sexta-feira 19:00"];
             let horariosValidosSabado = ["Sábado 07:00", "Sábado 09:00", "Sábado 11:00", "Sábado 14:00", "Sábado 17:00", "Sábado 19:00"];
 
-            // Verificar se a data está correta
             let diaSemana = dataSelecionada.getDay(); // 5 para sexta-feira, 6 para sábado
             let dataHoje = new Date();
 
@@ -154,4 +167,4 @@
         });
     </script>
 </body>
-</html>
+    </html>
