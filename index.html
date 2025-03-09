@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agendamento - Michelly Vanessa Unhas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        header {
+            background-color: #333;
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
+        h1 {
+            margin: 0;
+        }
+        .form-container {
+            margin: 20px;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        input, select, button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .error-message {
+            color: red;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Agendamento de Serviços - Michelly Vanessa Unhas</h1>
+    </header>
+
+    <div class="form-container">
+        <h2>Agende seu horário</h2>
+        <form id="agendamentoForm">
+            <label for="nome">Nome</label>
+            <input type="text" id="nome" required>
+
+            <label for="data">Data</label>
+            <input type="date" id="data" required>
+
+            <label for="horario">Horário</label>
+            <select id="horario" required>
+                <option value="">Selecione um horário</option>
+                <option value="Sexta-feira 18:00">Sexta-feira 18:00</option>
+                <option value="Sexta-feira 19:00">Sexta-feira 19:00</option>
+                <option value="Sábado 07:00">Sábado 07:00</option>
+                <option value="Sábado 09:00">Sábado 09:00</option>
+                <option value="Sábado 11:00">Sábado 11:00</option>
+                <option value="Sábado 14:00">Sábado 14:00</option>
+                <option value="Sábado 17:00">Sábado 17:00</option>
+                <option value="Sábado 19:00">Sábado 19:00</option>
+            </select>
+
+            <label for="servico">Serviço</label>
+            <select id="servico" required>
+                <option value="Manicure">Manicure</option>
+                <option value="Pedicure">Pedicure</option>
+                <option value="Unha em Gel">Unha em Gel</option>
+                <option value="Unha em Fibra">Unha em Fibra</option>
+            </select>
+
+            <button type="submit">Agendar</button>
+            <div class="error-message" id="error-message"></div>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('agendamentoForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // Obter a data e o horário selecionados
+            let dataSelecionada = new Date(document.getElementById('data').value);
+            let hora = document.getElementById('horario').value;
+
+            // Definir os horários válidos para agendamento
+            let horariosValidosSexta = ["Sexta-feira 18:00", "Sexta-feira 19:00"];
+            let horariosValidosSabado = ["Sábado 07:00", "Sábado 09:00", "Sábado 11:00", "Sábado 14:00", "Sábado 17:00", "Sábado 19:00"];
+
+            // Verificar se a data está correta
+            let diaSemana = dataSelecionada.getDay(); // 5 para sexta-feira, 6 para sábado
+            let dataHoje = new Date();
+
+            // A data de hoje deve ser menor ou igual à data selecionada
+            if (dataSelecionada < dataHoje) {
+                alert("Não é permitido agendar para datas passadas.");
+                return;
+            }
+
+            // Verificar se o dia é sexta ou sábado
+            if (diaSemana !== 5 && diaSemana !== 6) {
+                alert("Somente é permitido agendamento para sexta-feira ou sábado.");
+                return;
+            }
+
+            // Verificar se o horário está dentro das opções válidas
+            if (diaSemana === 5 && !horariosValidosSexta.includes(hora)) {
+                alert("Selecione um horário válido para sexta-feira.");
+                return;
+            }
+
+            if (diaSemana === 6 && !horariosValidosSabado.includes(hora)) {
+                alert("Selecione um horário válido para sábado.");
+                return;
+            }
+
+            // Verificação para evitar agendamento no mesmo horário
+            let agendamentos = JSON.parse(localStorage.getItem('agendamentos')) || [];
+            let agendamentoExistente = agendamentos.find(agendamento => agendamento.data === document.getElementById('data').value && agendamento.horario === hora);
+
+            if (agendamentoExistente) {
+                alert("Este horário já está agendado. Por favor, escolha outro horário.");
+                return;
+            }
+
+            // Se o agendamento for válido, adicionar aos agendamentos e salvar no localStorage
+            agendamentos.push({
+                nome: document.getElementById('nome').value,
+                data: document.getElementById('data').value,
+                horario: hora,
+                servico: document.getElementById('servico').value
+            });
+
+            localStorage.setItem('agendamentos', JSON.stringify(agendamentos));
+
+            alert("Agendamento realizado com sucesso! Um comprovante será enviado para o WhatsApp.");
+            
+            // Enviar os dados do agendamento para o WhatsApp
+            let whatsappMessage = `Agendamento realizado por ${document.getElementById('nome').value} para o serviço ${document.getElementById('servico').value}. Data: ${document.getElementById('data').value}, Horário: ${hora}.`;
+            window.open(`https://wa.me/5511964657571?text=${encodeURIComponent(whatsappMessage)}`, '_blank');
+        });
+    </script>
+</body>
+</html>
