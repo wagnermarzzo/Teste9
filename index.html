@@ -1,171 +1,138 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agendamento - Michelly Vanessa Unhas</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f8f8f8;
-            margin: 0;
-            padding: 0;
-        }
-        header {
-            background-color: #333;
-            color: white;
-            text-align: center;
-            padding: 20px;
-        }
-        h1 {
-            margin: 0;
-        }
-        .form-container {
-            background-color: white;
-            width: 80%;
-            margin: 30px auto;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-        label {
-            font-weight: bold;
-        }
-        input, select, button {
-            width: 100%;
-            padding: 12px;
-            margin: 10px 0;
-            border-radius: 4px;
-            border: 1px solid #ddd;
-        }
-        button {
-            background-color: #28a745;
-            color: white;
-            cursor: pointer;
-            border: none;
-        }
-        button:hover {
-            background-color: #218838;
-        }
-        .error-message {
-            color: red;
-            font-size: 14px;
-        }
-        .banner {
-            width: 100%;
-            height: 300px;
-            background-image: url('https://i.pinimg.com/originals/57/06/01/57060132745e29b1bf8474a4e66e0880.jpg');
-            background-size: cover;
-            background-position: center;
-            margin-bottom: 20px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agendamento Online</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background-color: #333;
+      color: #fff;
+      padding: 10px 0;
+      text-align: center;
+    }
+    .container {
+      width: 80%;
+      margin: 20px auto;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    input, button {
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background-color: #4CAF50;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    .message {
+      margin-top: 20px;
+      font-size: 18px;
+      color: green;
+    }
+  </style>
 </head>
 <body>
 
-    <header>
-        <h1>Agendamento - Michelly Vanessa Unhas</h1>
-    </header>
+  <header>
+    <h1>Agendamento de Manicure e Pedicure</h1>
+    <p>Escolha o melhor horário para seu atendimento</p>
+  </header>
 
-    <div class="banner"></div>
+  <div class="container">
+    <h2>Agende seu Horário</h2>
+    <form id="agendamentoForm">
+      <label for="nomeCliente">Nome:</label>
+      <input type="text" id="nomeCliente" name="nomeCliente" required>
 
-    <div class="form-container">
-        <h2>Agende seu horário</h2>
-        <form id="agendamentoForm">
-            <label for="nome">Nome</label>
-            <input type="text" id="nome" required>
+      <label for="dataHora">Data e Hora:</label>
+      <input type="datetime-local" id="dataHora" name="dataHora" required>
 
-            <label for="data">Data</label>
-            <input type="date" id="data" required>
+      <button type="submit">Agendar</button>
+    </form>
+    <div class="message" id="message"></div>
+  </div>
 
-            <label for="horario">Horário</label>
-            <select id="horario" required>
-                <option value="">Selecione um horário</option>
-                <option value="Sexta-feira 18:00">Sexta-feira 18:00</option>
-                <option value="Sexta-feira 19:00">Sexta-feira 19:00</option>
-                <option value="Sábado 07:00">Sábado 07:00</option>
-                <option value="Sábado 09:00">Sábado 09:00</option>
-                <option value="Sábado 11:00">Sábado 11:00</option>
-                <option value="Sábado 14:00">Sábado 14:00</option>
-                <option value="Sábado 17:00">Sábado 17:00</option>
-                <option value="Sábado 19:00">Sábado 19:00</option>
-            </select>
+  <script type="module">
+    // Importando as funções do SDK do Firebase
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-analytics.js";
+    import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-database.js";
 
-            <label for="servico">Serviço</label>
-            <select id="servico" required>
-                <option value="Manicure">Manicure</option>
-                <option value="Pedicure">Pedicure</option>
-                <option value="Unha em Gel">Unha em Gel</option>
-                <option value="Unha em Fibra">Unha em Fibra</option>
-            </select>
+    // Configuração do Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyCS4CZMvoR5ncU91tRexpodsInLnxoshyk",
+      authDomain: "teste-6644a.firebaseapp.com",
+      projectId: "teste-6644a",
+      storageBucket: "teste-6644a.firebasestorage.app",
+      messagingSenderId: "217263201644",
+      appId: "1:217263201644:web:7dfc9c5b13b1751615a749",
+      measurementId: "G-4LSD66E81M"
+    };
 
-            <button type="submit">Agendar</button>
-            <div class="error-message" id="error-message"></div>
-        </form>
-    </div>
+    // Inicializando o Firebase
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);  // Caso queira usar o analytics
 
-    <script>
-        document.getElementById('agendamentoForm').addEventListener('submit', function(event) {
-            event.preventDefault();
+    // Inicializando o banco de dados
+    const database = getDatabase(app);
 
-            let dataSelecionada = new Date(document.getElementById('data').value);
-            let hora = document.getElementById('horario').value;
+    // Função para salvar o agendamento
+    function salvarAgendamento(nomeCliente, dataHora) {
+      // Verificando se o horário já está agendado
+      const horarioRef = ref(database, 'agendamentos/' + dataHora);
+      get(horarioRef).then((snapshot) => {
+        if (snapshot.exists()) {
+          document.getElementById('message').innerText = "Este horário já está ocupado. Escolha outro.";
+        } else {
+          // Salvando o agendamento
+          set(ref(database, 'agendamentos/' + dataHora + '/' + nomeCliente), {
+            nome: nomeCliente,
+            dataHora: dataHora
+          }).then(() => {
+            document.getElementById('message').innerText = "Agendamento realizado com sucesso!";
+          }).catch((error) => {
+            document.getElementById('message').innerText = "Erro ao agendar: " + error.message;
+          });
+        }
+      }).catch((error) => {
+        document.getElementById('message').innerText = "Erro ao verificar horário: " + error.message;
+      });
+    }
 
-            // Horários válidos para sexta-feira e sábado
-            let horariosValidosSexta = ["Sexta-feira 18:00", "Sexta-feira 19:00"];
-            let horariosValidosSabado = ["Sábado 07:00", "Sábado 09:00", "Sábado 11:00", "Sábado 14:00", "Sábado 17:00", "Sábado 19:00"];
+    // Lógica do formulário de agendamento
+    document.getElementById('agendamentoForm').addEventListener('submit', (event) => {
+      event.preventDefault();
+      const nomeCliente = document.getElementById('nomeCliente').value;
+      const dataHora = document.getElementById('dataHora').value;
 
-            let diaSemana = dataSelecionada.getDay(); // 5 para sexta-feira, 6 para sábado
-            let dataHoje = new Date();
+      if (!nomeCliente || !dataHora) {
+        document.getElementById('message').innerText = "Preencha todos os campos.";
+        return;
+      }
 
-            // Verifica se a data selecionada é posterior ou igual à data atual
-            if (dataSelecionada < dataHoje) {
-                alert("Não é permitido agendar para datas passadas.");
-                return;
-            }
+      salvarAgendamento(nomeCliente, dataHora);
+    });
+  </script>
 
-            // Verificar se o dia é sexta ou sábado
-            if (diaSemana !== 5 && diaSemana !== 6) {
-                alert("Somente é permitido agendamento para sexta-feira ou sábado.");
-                return;
-            }
-
-            // Verificar se o horário está dentro das opções válidas
-            if (diaSemana === 5 && !horariosValidosSexta.includes(hora)) {
-                alert("Selecione um horário válido para sexta-feira.");
-                return;
-            }
-
-            if (diaSemana === 6 && !horariosValidosSabado.includes(hora)) {
-                alert("Selecione um horário válido para sábado.");
-                return;
-            }
-
-            // Verificação para evitar agendamento no mesmo horário
-            let agendamentos = JSON.parse(localStorage.getItem('agendamentos')) || [];
-            let agendamentoExistente = agendamentos.find(agendamento => agendamento.data === document.getElementById('data').value && agendamento.horario === hora);
-
-            if (agendamentoExistente) {
-                alert("Este horário já está agendado. Por favor, escolha outro horário.");
-                return;
-            }
-
-            // Se o agendamento for válido, adicionar aos agendamentos e salvar no localStorage
-            agendamentos.push({
-                nome: document.getElementById('nome').value,
-                data: document.getElementById('data').value,
-                horario: hora,
-                servico: document.getElementById('servico').value
-            });
-
-            localStorage.setItem('agendamentos', JSON.stringify(agendamentos));
-
-            alert("Agendamento realizado com sucesso! Um comprovante será enviado para o WhatsApp.");
-            
-            // Enviar os dados do agendamento para o WhatsApp
-            let whatsappMessage = `Agendamento realizado por ${document.getElementById('nome').value} para o serviço ${document.getElementById('servico').value}. Data: ${document.getElementById('data').value}, Horário: ${hora}.`;
-            window.open(`https://wa.me/5511964657571?text=${encodeURIComponent(whatsappMessage)}`, '_blank');
-        });
-    </script>
 </body>
 </html>
