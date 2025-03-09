@@ -111,13 +111,14 @@
             let dataSelecionada = new Date(document.getElementById('data').value);
             let hora = document.getElementById('horario').value;
 
+            // Horários válidos para sexta-feira e sábado
             let horariosValidosSexta = ["Sexta-feira 18:00", "Sexta-feira 19:00"];
             let horariosValidosSabado = ["Sábado 07:00", "Sábado 09:00", "Sábado 11:00", "Sábado 14:00", "Sábado 17:00", "Sábado 19:00"];
 
             let diaSemana = dataSelecionada.getDay(); // 5 para sexta-feira, 6 para sábado
             let dataHoje = new Date();
 
-            // A data de hoje deve ser menor ou igual à data selecionada
+            // Verifica se a data selecionada é posterior ou igual à data atual
             if (dataSelecionada < dataHoje) {
                 alert("Não é permitido agendar para datas passadas.");
                 return;
@@ -167,4 +168,4 @@
         });
     </script>
 </body>
-    </html>
+</html>
